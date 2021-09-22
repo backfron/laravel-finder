@@ -77,6 +77,8 @@ class LaravelFinderServiceProvider extends ServiceProvider
         ], 'laravel-finder.views');*/
 
         // Registering package commands.
-        // $this->commands([]);
+        $this->commands([
+            \Backfron\LaravelFinder\Commands\MakeFinderCommand::class
+        ]);
     }
 }
