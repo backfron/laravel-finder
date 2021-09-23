@@ -25,7 +25,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Backfron\\LaravelFinder\\Tests\\": "tests"
+            "Backfron\\LaravelFinder\\Tests\\": "tests",
+            "App\\": "vendor/orchestra/testbench-core/laravel/app"
         }
     },
     "extra": {

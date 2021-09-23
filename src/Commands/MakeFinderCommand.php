@@ -4,6 +4,7 @@ namespace Backfron\LaravelFinder\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MakeFinderCommand extends GeneratorCommand
 {
@@ -95,9 +96,7 @@ class MakeFinderCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-
-        $namespaceModel = $this->getNamespaceModel($name);
-
+        $namespaceModel = $this->getNamespaceModel(class_basename($name));
         $model = class_basename($namespaceModel);
 
         $replace = [
@@ -116,6 +115,15 @@ class MakeFinderCommand extends GeneratorCommand
         );
     }
 
+
+    protected function guessSubfolderName($name)
+    {
+        if (Str::endsWith($name, 'Finder')) {
+            return Str::plural(class_basename(substr($name, 0, -6)));
+        }
+
+        return Str::plural(class_basename($name));
+    }
     /**
      * Guess the model name from the Factory name or return a default model name.
      *
@@ -128,7 +136,9 @@ class MakeFinderCommand extends GeneratorCommand
             $name = substr($name, 0, -6);
         }
 
-        $modelName = $this->qualifyModel(Str::after($name, $this->rootNamespace() . "Finders\\"));
+        // $modelName = $this->qualifyModel(Str::after($name, $this->rootNamespace() . "Finders\\"));
+        $modelName = $this->qualifyModel($name);
+
 
         if (class_exists($modelName)) {
             return $modelName;
@@ -152,6 +162,23 @@ class MakeFinderCommand extends GeneratorCommand
         return $this->option('model')
             ? $this->qualifyModel($this->option('model'))
             : $this->qualifyModel($this->guessModelName($name));
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return bool|null
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function handle()
+    {
+        if ($this->option('model')) {
+            class_exists($this->qualifyModel($this->option('model')))
+                ?: throw new ModelNotFoundException("The specified model don't exists.");
+        }
+
+        parent::handle();
     }
 
     // /**

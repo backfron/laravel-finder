@@ -1,11 +1,12 @@
 <?php
 
-namespace Backfron\LaravelFinder\Tests;
+namespace Backfron\LaravelFinder\Feature\Tests;
 
 use Illuminate\Support\Facades\Config;
 use Backfron\LaravelFinder\Finders\Posts\PostsFinder;
+use Backfron\LaravelFinder\Tests\LaravelFinderTestCase;
 
-class SearchTest extends LaravelFinderTestCase
+class FinderTest extends LaravelFinderTestCase
 {
 
     /** @test */
