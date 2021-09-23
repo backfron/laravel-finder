@@ -4,7 +4,7 @@ namespace Backfron\LaravelFinder\Finders\Posts\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class UserRole
+class FooUserRole
 {
     /**
      * Apply a given search value to the query builder instance.

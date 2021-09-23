@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'ignore-unexisting-filters' => false,
+    'ignore-unexisting-filters' => true,
 ];

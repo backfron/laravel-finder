@@ -5,10 +5,12 @@ namespace Backfron\LaravelFinder\Models;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Post extends Model
+class FooPost extends Model
 {
+    protected $table = 'posts';
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(FooUser::class);
     }
 }

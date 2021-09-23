@@ -3,7 +3,7 @@
 namespace Backfron\LaravelFinder\Feature\Tests;
 
 use Illuminate\Support\Facades\Config;
-use Backfron\LaravelFinder\Finders\Posts\PostsFinder;
+use Backfron\LaravelFinder\Finders\Posts\FooPostsFinder;
 use Backfron\LaravelFinder\Tests\LaravelFinderTestCase;
 
 class FinderTest extends LaravelFinderTestCase
@@ -12,7 +12,7 @@ class FinderTest extends LaravelFinderTestCase
     /** @test */
     public function test_can_apply_filter()
     {
-        $posts = PostsFinder::filters('title', 'Vue.js')
+        $posts = FooPostsFinder::filters('foo_title', 'Vue.js')
             ->get();
 
         $this->assertCount(3, $posts);
@@ -21,9 +21,9 @@ class FinderTest extends LaravelFinderTestCase
     /** @test */
     public function test_can_apply_an_array_of_filters()
     {
-        $posts = PostsFinder::filters([
-            'title' => 'Vue.js',
-            'user_role' => 'admin'
+        $posts = FooPostsFinder::filters([
+            'foo_title' => 'Vue.js',
+            'foo_user_role' => 'admin'
         ])->get();
 
         $this->assertCount(1, $posts);
@@ -35,7 +35,7 @@ class FinderTest extends LaravelFinderTestCase
     public function dont_throw_an_exception_if_filter_dont_exists()
     {
         Config::set('laravel-finder.ignore-unexisting-filters', true);
-        $posts = PostsFinder::filters(['unknow_filter', 'Vue'])
+        $posts = FooPostsFinder::filters(['unexisting_filter', 'Vue'])
             ->get();
 
         $this->assertCount(6, $posts);
@@ -46,7 +46,7 @@ class FinderTest extends LaravelFinderTestCase
     {
         Config::set('laravel-finder.ignore-unexisting-filters', false);
         try {
-            PostsFinder::filters(['unexisting_filter', 'Vue'])
+            FooPostsFinder::filters(['unexisting_filter', 'Vue'])
                 ->get();
         } catch (\Throwable $th) {
             if ($th::class == 'Backfron\LaravelFinder\Exceptions\FilterNotFoundException') {
