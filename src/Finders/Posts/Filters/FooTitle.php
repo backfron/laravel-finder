@@ -3,8 +3,9 @@
 namespace Backfron\LaravelFinder\Finders\Posts\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Backfron\LaravelFinder\Contracts\FilterContract;
 
-class FooTitle
+class FooTitle implements FilterContract
 {
     /**
      * Apply a given search value to the query builder instance.

@@ -2,6 +2,7 @@
 
 namespace Backfron\LaravelFinder;
 
+use Backfron\LaravelFinder\Commands\MakeFilterCommand;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelFinderServiceProvider extends ServiceProvider
@@ -78,7 +79,8 @@ class LaravelFinderServiceProvider extends ServiceProvider
 
         // Registering package commands.
         $this->commands([
-            \Backfron\LaravelFinder\Commands\MakeFinderCommand::class
+            \Backfron\LaravelFinder\Commands\MakeFinderCommand::class,
+            \Backfron\LaravelFinder\Commands\MakeFilterCommand::class,
         ]);
     }
 }

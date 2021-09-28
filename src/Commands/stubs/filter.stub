@@ -1,0 +1,21 @@
+<?php
+
+namespace {{ namespace }};
+
+use Backfron\LaravelFinder\Contracts\FilterContract;
+use Illuminate\Database\Eloquent\Builder;
+
+class {{ class }} implements FilterContract
+{
+    /**
+     * Apply a filter to the query builder instance.
+     *
+     * @param Builder $builder
+     * @param mixed ${{ field }}
+     * @return Builder $builder
+     */
+    public static function apply(Builder $query, ${{ field }})
+    {
+        return $query->where('{{ field }}', ${{ field }});
+    }
+}
