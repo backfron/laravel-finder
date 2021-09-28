@@ -13,7 +13,7 @@ class MakeFinderCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:finder {name} {--model=}';
+    protected $signature = 'make:finder {name} {--model=} {--filter=*}';
 
     /**
      * The console command description.
@@ -115,7 +115,12 @@ class MakeFinderCommand extends GeneratorCommand
         );
     }
 
-
+    /**
+     * Guess the subdirectory based in the Finder name.
+     *
+     * @param string $name
+     * @return string
+     */
     protected function guessSubfolderName($name)
     {
         if (Str::endsWith($name, 'Finder')) {
@@ -124,8 +129,9 @@ class MakeFinderCommand extends GeneratorCommand
 
         return Str::plural(class_basename($name));
     }
+
     /**
-     * Guess the model name from the Factory name or return a default model name.
+     * Guess the model name based in Finder name or return a default model name.
      *
      * @param  string  $name
      * @return string
@@ -136,9 +142,7 @@ class MakeFinderCommand extends GeneratorCommand
             $name = substr($name, 0, -6);
         }
 
-        // $modelName = $this->qualifyModel(Str::after($name, $this->rootNamespace() . "Finders\\"));
         $modelName = $this->qualifyModel($name);
-
 
         if (class_exists($modelName)) {
             return $modelName;
@@ -168,28 +172,24 @@ class MakeFinderCommand extends GeneratorCommand
      * Execute the console command.
      *
      * @return bool|null
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle()
     {
         if ($this->option('model')) {
-            class_exists($this->qualifyModel($this->option('model')))
-                ?: throw new ModelNotFoundException("The specified model don't exists.");
+            $this->error("The specified model '" . $this->option('model') . "' was not found.");
         }
 
         parent::handle();
-    }
 
-    // /**
-    //  * Execute the console command.
-    //  *
-    //  * @return int
-    //  */
-    // public function handle()
-    // {
-    //     $this->getStub();
-    //     $this->info('Hello world!!!!');
-    //     return 0;
-    // }
+        if ($this->option('filter')) {
+
+            $model = class_basename($this->guessModelName($this->argument('name')));
+            foreach ($this->option('filter') as $filter) {
+                $this->call('make:filter', [
+                    'name' => $filter,
+                    '--model' => $model,
+                ]);
+            }
+        }
+    }
 }

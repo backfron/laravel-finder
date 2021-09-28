@@ -5,7 +5,6 @@ namespace Backfron\LaravelFinder\Commands;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MakeFilterCommand extends GeneratorCommand
 {
@@ -99,7 +98,8 @@ class MakeFilterCommand extends GeneratorCommand
     {
         $namespaceModel = $this->getNamespaceModel(class_basename($name));
         $model = class_basename($namespaceModel);
-        $field = Str::lower(class_basename($name));
+        $databaseField = Str::snake(class_basename($name));
+        $phpVariable = Str::camel(Str::snake(class_basename($name)));
 
         $replace = [
             'NamespacedDummyModel' => $namespaceModel,
@@ -108,9 +108,12 @@ class MakeFilterCommand extends GeneratorCommand
             'DummyModel' => $model,
             '{{ model }}' => $model,
             '{{model}}' => $model,
-            'DummyField' => $field,
-            '{{ field }}' => $field,
-            '{{field}}' => $field,
+            'DummyDatabaseField' => $databaseField,
+            '{{ dataBaseField }}' => $databaseField,
+            '{{dataBaseField}}' => $databaseField,
+            'DummyPhpVariable' => $phpVariable,
+            '{{ phpVariable }}' => $phpVariable,
+            '{{phpVariable}}' => $phpVariable,
         ];
 
         return str_replace(
@@ -120,17 +123,8 @@ class MakeFilterCommand extends GeneratorCommand
         );
     }
 
-
-    protected function guessSubfolderName($name)
-    {
-        if (Str::endsWith($name, 'Finder')) {
-            return Str::plural(class_basename(substr($name, 0, -6)));
-        }
-
-        return Str::plural(class_basename($name));
-    }
     /**
-     * Guess the model name from the Factory name or return a default model name.
+     * Guess the model name based in Finder name or return a default model name.
      *
      * @param  string  $name
      * @return string
@@ -141,9 +135,7 @@ class MakeFilterCommand extends GeneratorCommand
             $name = substr($name, 0, -6);
         }
 
-        // $modelName = $this->qualifyModel(Str::after($name, $this->rootNamespace() . "Finders\\"));
         $modelName = $this->qualifyModel($name);
-
 
         if (class_exists($modelName)) {
             return $modelName;
@@ -173,8 +165,6 @@ class MakeFilterCommand extends GeneratorCommand
      * Execute the console command.
      *
      * @return bool|null
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle()
     {
@@ -194,19 +184,6 @@ class MakeFilterCommand extends GeneratorCommand
             return false;
         }
 
-
         parent::handle();
     }
-
-    // /**
-    //  * Execute the console command.
-    //  *
-    //  * @return int
-    //  */
-    // public function handle()
-    // {
-    //     $this->getStub();
-    //     $this->info('Hello world!!!!');
-    //     return 0;
-    // }
 }

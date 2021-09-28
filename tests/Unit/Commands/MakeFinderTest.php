@@ -129,7 +129,7 @@ CLASS;
     }
 
     /** @test */
-    public function throw_an_exception_if_specified_model_do_not_exists()
+    public function stop_command_if_specified_model_do_not_exists()
     {
         // destination path of the CompanyFinder class
         $companyFinder = app_path('Finders/Companies/CompanyFinder.php');
@@ -143,14 +143,64 @@ CLASS;
         $this->assertFalse(File::exists($companyFinder));
         $this->assertFalse(File::exists($clientModel));
 
-        try {
-            $this->artisan('make:finder CompanyFinder --model=Company');
-        } catch (ModelNotFoundException $th) {
-            $this->assertFalse(File::exists($companyFinder));
-            $this->assertTrue(true);
-            return;
+        $response = $this->artisan('make:finder CompanyFinder --model=Company');
+
+        $response->expectsOutput("The specified model 'Company' was not found.");
+        $this->assertFalse(File::exists($companyFinder));
+    }
+
+    /** @test */
+    public function can_create_a_finder_specifing_filters()
+    {
+        // destination path of the PostFinder class
+        $postFinder = app_path('Finders/Posts/PostFinder.php');
+        $postModel = app_path('Models/Post.php');
+        $titleFilter = app_path('Finders/Posts/Filters/Title.php');
+        $statusFilter = app_path('Finders/Posts/Filters/Status.php');
+
+        // make sure we're starting from a clean state
+        if (File::exists($postFinder)) {
+            unlink($postFinder);
+        }
+        if (!File::exists($postModel)) {
+            $this->artisan('make:model Post');
         }
 
-        $this->fail("ModelNotFoundException expected but don't catched.");
+        $this->assertFalse(File::exists($postFinder));
+        $this->assertTrue(File::exists($postModel));
+// $this->withoutMockingConsoleOutput();
+        $this->artisan('make:finder PostFinder --filter=Title --filter=Status');
+
+        $this->assertTrue(File::exists($postFinder));
+        $this->assertTrue(File::exists($titleFilter));
+        $this->assertTrue(File::exists($statusFilter));
+
+    }
+
+    /** @test */
+    public function can_create_a_finder_specifing_filters_and_model()
+    {
+        // destination path of the PostFinder class
+        $postFinder = app_path('Finders/Posts/PostFinder.php');
+        $postModel = app_path('Models/Post.php');
+        $titleFilter = app_path('Finders/Posts/Filters/Title.php');
+        $statusFilter = app_path('Finders/Posts/Filters/Status.php');
+
+        // make sure we're starting from a clean state
+        if (File::exists($postFinder)) {
+            unlink($postFinder);
+        }
+        if (!File::exists($postModel)) {
+            $this->artisan('make:model Post');
+        }
+
+        $this->assertFalse(File::exists($postFinder));
+        $this->assertTrue(File::exists($postModel));
+        // $this->withoutMockingConsoleOutput();
+        $this->artisan('make:finder PostFinder --model=Post --filter=Title --filter=Status');
+
+        $this->assertTrue(File::exists($postFinder));
+        $this->assertTrue(File::exists($titleFilter));
+        $this->assertTrue(File::exists($statusFilter));
     }
 }

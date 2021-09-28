@@ -4,7 +4,6 @@ namespace Backfron\LaravelFinder\Tests\Unit\Commands;
 
 use Illuminate\Support\Facades\File;
 use Backfron\LaravelFinder\Tests\LaravelFinderTestCase;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MakeFilterTest extends LaravelFinderTestCase
 {
@@ -55,6 +54,61 @@ class Name implements FilterContract
     public static function apply(Builder \$query, \$name)
     {
         return \$query->where('name', \$name);
+    }
+}
+
+CLASS;
+
+        $this->assertEquals($expectedContents, file_get_contents($nameFilter));
+    }
+
+    /** @test */
+    public function can_create_a_filter_with_composed_name()
+    {
+        $postModel = app_path('Models/Post.php');
+        $postFinder = app_path('Finders/Posts/PostFinder.php');
+        // destination path of the Name filter class
+        $nameFilter = app_path('Finders/Posts/Filters/LastName.php');
+
+        // make sure we're starting from a clean state
+        if (File::exists($nameFilter)) {
+            unlink($nameFilter);
+        }
+        if (!File::exists($postModel)) {
+            $this->artisan('make:model Post');
+        }
+        if (!File::exists($postFinder)) {
+            $this->artisan('make:finder PostFinder --model=Post');
+        }
+
+        $this->assertFalse(File::exists($nameFilter));
+        $this->assertTrue(File::exists($postModel));
+        $this->assertTrue(File::exists($postFinder));
+
+        $this->artisan('make:filter LastName --model=Post');
+
+        $this->assertTrue(File::exists($nameFilter));
+        // Assert the file contains the right contents
+        $expectedContents = <<<CLASS
+<?php
+
+namespace App\Finders\Posts\Filters;
+
+use Backfron\LaravelFinder\Contracts\FilterContract;
+use Illuminate\Database\Eloquent\Builder;
+
+class LastName implements FilterContract
+{
+    /**
+     * Apply a filter to the query builder instance.
+     *
+     * @param Builder \$builder
+     * @param mixed \$lastName
+     * @return Builder \$builder
+     */
+    public static function apply(Builder \$query, \$lastName)
+    {
+        return \$query->where('last_name', \$lastName);
     }
 }
 

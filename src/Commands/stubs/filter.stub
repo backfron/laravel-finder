@@ -11,11 +11,11 @@ class {{ class }} implements FilterContract
      * Apply a filter to the query builder instance.
      *
      * @param Builder $builder
-     * @param mixed ${{ field }}
+     * @param mixed ${{ phpVariable }}
      * @return Builder $builder
      */
-    public static function apply(Builder $query, ${{ field }})
+    public static function apply(Builder $query, ${{ phpVariable }})
     {
-        return $query->where('{{ field }}', ${{ field }});
+        return $query->where('{{ dataBaseField }}', ${{ phpVariable }});
     }
 }
