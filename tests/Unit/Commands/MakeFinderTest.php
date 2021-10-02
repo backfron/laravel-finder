@@ -4,7 +4,6 @@ namespace Backfron\LaravelFinder\Tests\Unit\Commands;
 
 use Illuminate\Support\Facades\File;
 use Backfron\LaravelFinder\Tests\LaravelFinderTestCase;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MakeFinderTest extends LaravelFinderTestCase
 {
@@ -168,7 +167,7 @@ CLASS;
 
         $this->assertFalse(File::exists($postFinder));
         $this->assertTrue(File::exists($postModel));
-// $this->withoutMockingConsoleOutput();
+
         $this->artisan('make:finder PostFinder --filter=Title --filter=Status');
 
         $this->assertTrue(File::exists($postFinder));
@@ -196,7 +195,7 @@ CLASS;
 
         $this->assertFalse(File::exists($postFinder));
         $this->assertTrue(File::exists($postModel));
-        // $this->withoutMockingConsoleOutput();
+
         $this->artisan('make:finder PostFinder --model=Post --filter=Title --filter=Status');
 
         $this->assertTrue(File::exists($postFinder));

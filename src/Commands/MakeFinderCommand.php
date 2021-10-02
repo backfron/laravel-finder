@@ -4,7 +4,6 @@ namespace Backfron\LaravelFinder\Commands;
 
 use Illuminate\Support\Str;
 use Illuminate\Console\GeneratorCommand;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class MakeFinderCommand extends GeneratorCommand
 {
@@ -176,7 +175,12 @@ class MakeFinderCommand extends GeneratorCommand
     public function handle()
     {
         if ($this->option('model')) {
-            $this->error("The specified model '" . $this->option('model') . "' was not found.");
+            $modelName = $this->guessModelName($this->option('model'));
+            if (in_array($modelName, ['App\Model', 'App\Models\Model'])){
+                $this->error("The specified model '" . $this->option('model') . "' was not found.");
+
+                return false;
+            }
         }
 
         parent::handle();
