@@ -109,7 +109,7 @@ You can create as many Filters as you need. So for example imagine we created th
 /*
 IMAGINE THIS INCOMING REQUEST
 [
-    status => completed,
+    status => 'completed',
     user_owner_id => 123,
     finished_at => '2021-10-01',
 ]
@@ -118,9 +118,9 @@ IMAGINE THIS INCOMING REQUEST
 use App\Finders\Tasks\TaskFinder;
 
 $tasks = TaskFinder::filters([
-    'status' => request()->input('status'),
-    'user_owner_id' => request()->input('user_owner_id'),
-    'finished_at' => request()->input('finished_at'),
+    'status' => request('status'),
+    'user_owner_id' => request('user_owner_id'),
+    'finished_at' => request('finished_at'),
 ])->get();
 
 ```
@@ -134,9 +134,9 @@ use App\Finders\Tasks\TaskFinder;
 use Illuminate\Support\Facades\Auth;
 
 $tasks = TaskFinder::filters([
-    'status' => request()->input('status'),
-    'user_owner_id' => request()->input('user_owner_id'),
-    'finished_at' => request()->input('finished_at'),
+    'status' => request('status'),
+    'user_owner_id' => request('user_owner_id'),
+    'finished_at' => request('finished_at'),
 ])
 ->where('user_id', Auth::id())
 ->get();
@@ -176,4 +176,14 @@ If you discover any security related issues, please email jago86@gmail.com inste
 
 Please see the [license file](license.md) for more information.
 
+[ico-version]: https://img.shields.io/packagist/v/backfron/laravel-finder.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/backfron/laravel-finder.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/backfron/laravel-finder/master.svg?style=flat-square
+[ico-styleci]: https://styleci.io/repos/12345678/shield
 
+[link-packagist]: https://packagist.org/packages/backfron/laravel-finder
+[link-downloads]: https://packagist.org/packages/backfron/laravel-finder
+[link-travis]: https://travis-ci.org/backfron/laravel-finder
+[link-styleci]: https://styleci.io/repos/12345678
+[link-author]: https://backfron.com
+[link-contributors]: ../../contributors
