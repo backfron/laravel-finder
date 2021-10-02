@@ -2,7 +2,6 @@
 
 namespace Backfron\LaravelFinder;
 
-use Backfron\LaravelFinder\Commands\MakeFilterCommand;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelFinderServiceProvider extends ServiceProvider
@@ -14,11 +13,6 @@ class LaravelFinderServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'backfron');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'backfron');
-        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
-
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
             $this->bootForConsole();
@@ -33,11 +27,6 @@ class LaravelFinderServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/laravel-finder.php', 'laravel-finder');
-
-        // Register the service the package provides.
-        // $this->app->singleton('laravel-finder', function ($app) {
-        //     return new LaravelFinder;
-        // });
     }
 
     /**
@@ -61,21 +50,6 @@ class LaravelFinderServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/laravel-finder.php' => config_path('laravel-finder.php'),
         ], 'laravel-finder.config');
-
-        // Publishing the views.
-        /*$this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/backfron'),
-        ], 'laravel-finder.views');*/
-
-        // Publishing assets.
-        /*$this->publishes([
-            __DIR__.'/../resources/assets' => public_path('vendor/backfron'),
-        ], 'laravel-finder.views');*/
-
-        // Publishing the translation files.
-        /*$this->publishes([
-            __DIR__.'/../resources/lang' => resource_path('lang/vendor/backfron'),
-        ], 'laravel-finder.views');*/
 
         // Registering package commands.
         $this->commands([
