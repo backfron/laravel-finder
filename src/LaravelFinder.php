@@ -32,6 +32,7 @@ class LaravelFinder
      * Add filters
      *
      * @param array $filters
+     * @param mixed $value
      * @return self
      */
     public function addFilters(array|string $filters, $value = null)
@@ -53,11 +54,19 @@ class LaravelFinder
      * @param Closure $filters
      * @return self
      */
-    public function addGlobalFilters(Closure|array $filters)
+    public function addGlobalFilters(Closure|array|string $filters, $value = "")
     {
-        if (!is_array($filters)) {
+
+        if ($filters instanceof Closure) {
             $filters = (array) $filters;
         }
+
+        if (is_string($filters)) {
+            $filters = [
+                [$filters, $value]
+            ];
+        }
+
         $this->globalFilters = $filters;
 
         return $this;

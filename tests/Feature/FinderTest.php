@@ -61,9 +61,9 @@ class FinderTest extends LaravelFinderTestCase
     /** @test */
     public function test_can_apply_class_filters_as_global_filters()
     {
-        $posts = FooPostsFinder::global([
-            [FooTitle::class, 'Vue.js'],
-        ])->filters([])->get();
+        $posts = FooPostsFinder::global(
+            FooTitle::class, 'Vue.js',
+        )->filters([])->get();
 
         $this->assertCount(3, $posts);
         $this->assertEquals(2, $posts[0]->id);
