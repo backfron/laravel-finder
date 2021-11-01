@@ -80,7 +80,7 @@ class MakeFinderCommand extends GeneratorCommand
             return $name;
         }
 
-        $subfolder = Str::plural(class_basename($this->getNamespaceModel($name)));
+        $subfolder = Str::plural(class_basename($this->getNamespacedModel($name)));
 
         return $this->qualifyClass(
             $this->getDefaultNamespace(trim($rootNamespace, '\\')) . "\\{$subfolder}\\" . $name
@@ -95,13 +95,18 @@ class MakeFinderCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        $namespaceModel = $this->getNamespaceModel(class_basename($name));
-        $model = class_basename($namespaceModel);
+        $namespacedModel = $this->getNamespacedModel(class_basename($name));
+
+        if (!class_exists($namespacedModel)) {
+            $namespacedModel = 'App\Models\Model';
+        }
+
+        $model = class_basename($namespacedModel);
 
         $replace = [
-            'NamespacedDummyModel' => $namespaceModel,
-            '{{ namespacedModel }}' => $namespaceModel,
-            '{{namespacedModel}}' => $namespaceModel,
+            'NamespacedDummyModel' => $namespacedModel,
+            '{{ namespacedModel }}' => $namespacedModel,
+            '{{namespacedModel}}' => $namespacedModel,
             'DummyModel' => $model,
             '{{ model }}' => $model,
             '{{model}}' => $model,
@@ -141,17 +146,7 @@ class MakeFinderCommand extends GeneratorCommand
             $name = substr($name, 0, -6);
         }
 
-        $modelName = $this->qualifyModel($name);
-
-        if (class_exists($modelName)) {
-            return $modelName;
-        }
-
-        if (is_dir(app_path('Models/'))) {
-            return $this->rootNamespace() . 'Models\Model';
-        }
-
-        return $this->rootNamespace() . 'Model';
+        return $name;
     }
 
     /**
@@ -160,11 +155,9 @@ class MakeFinderCommand extends GeneratorCommand
      * @param string $name
      * @return string
      */
-    protected function getNamespaceModel($name)
+    protected function getNamespacedModel($name)
     {
-        return $this->option('model')
-            ? $this->qualifyModel($this->option('model'))
-            : $this->qualifyModel($this->guessModelName($name));
+        return $this->qualifyModel($this->guessModelName($name));
     }
 
     /**
@@ -175,8 +168,9 @@ class MakeFinderCommand extends GeneratorCommand
     public function handle()
     {
         if ($this->option('model')) {
-            $modelName = $this->guessModelName($this->option('model'));
-            if (in_array($modelName, ['App\Model', 'App\Models\Model'])){
+            $namespacedModelName = $this->qualifyModel($this->guessModelName($this->option('model')));
+
+            if (!class_exists($namespacedModelName)){
                 $this->error("The specified model '" . $this->option('model') . "' was not found.");
 
                 return false;
