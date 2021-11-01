@@ -2,10 +2,11 @@
 
 namespace Backfron\LaravelFinder;
 
+use Closure;
+use BadMethodCallException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Backfron\LaravelFinder\Exceptions\FilterNotFoundException;
-use BadMethodCallException;
 
 class LaravelFinder
 {
@@ -13,10 +14,13 @@ class LaravelFinder
 
     protected $filters = [];
 
+    protected $globalFilters = [];
+
     protected $query;
 
     protected static $swapMethods = [
         'filters' => 'addFilters',
+        'global' => 'addGlobalFilters',
     ];
 
     public function __construct()
@@ -25,10 +29,10 @@ class LaravelFinder
     }
 
     /**
-     * Apply filters
+     * Add filters
      *
      * @param array $filters
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return self
      */
     public function addFilters(array|string $filters, $value = null)
     {
@@ -39,6 +43,22 @@ class LaravelFinder
         } else {
             $this->filters = $filters;
         }
+
+        return $this;
+    }
+
+    /**
+     * Add global filters
+     *
+     * @param Closure $filters
+     * @return self
+     */
+    public function addGlobalFilters(Closure|array $filters)
+    {
+        if (!is_array($filters)) {
+            $filters = (array) $filters;
+        }
+        $this->globalFilters = $filters;
 
         return $this;
     }
@@ -63,7 +83,29 @@ class LaravelFinder
                 throw new FilterNotFoundException;
             }
             if (class_exists($filterClassName)) {
-                $this->query = $filterClassName::apply($this->query, $filterValue);
+                $filterClassName::apply($this->query, $filterValue);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Applies global filters to the query
+     *
+     * @return self
+     */
+    protected function applyGlobalFilters()
+    {
+        foreach ($this->globalFilters as $filter) {
+
+            if ($filter instanceof Closure) {
+                $filter($this->query);
+            }
+
+            if (is_array($filter)) {
+                $filterClass = new $filter[0];
+                $filterClass::apply($this->query, $filter[1]);
             }
         }
 
@@ -89,21 +131,33 @@ class LaravelFinder
 
     public static function __callStatic($method, $parameters)
     {
-        $method = static::$swapMethods[$method];
-        return (new static)->$method(...$parameters);
+        if (array_key_exists($method, static::$swapMethods)) {
+            $method = static::$swapMethods[$method];
+            return (new static)->$method(...$parameters);
+        }
+
+        $message = 'Method "%s" not found.';
+
+        throw new BadMethodCallException(sprintf($message, $method));
     }
 
     public function __call($method, $parameters)
     {
         if (method_exists($this->model, $method) OR method_exists(QueryBuilder::class, $method)) {
 
-            $this->applyFilters();
+            $this->applyFilters()
+                ->applyGlobalFilters();
 
             if (empty($parameters)) {
                 return call_user_func([$this->query, $method]);
             }
 
             return call_user_func([$this->query, $method], ...$parameters);
+        }
+
+        if (array_key_exists($method, static::$swapMethods)) {
+            $method = static::$swapMethods[$method];
+            return $this->$method(...$parameters);
         }
 
         $message = 'Method "%s" not found.';
