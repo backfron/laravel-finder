@@ -127,7 +127,7 @@ $tasks = TaskFinder::filters([
 
 Under the hood, LaravelFinder will take the field names and will call the appropriate Filter. For `status` field the `Status` filter will be called, for `user_owner_id` field the UserOwnerId filter will be called, for the `finished_at` field the `FinishedAt` field will be called an so on.
 
-The static `filters` method will return an `Illuminate\Database\Eloquent\Builder` instance, that means you can continue chaining Eloquent methods after your filters are applied.
+After setting your filters, you can even call any method that you would normally call in your model instance, that means you can continue chaining Eloquent methods after applying your filters.
 
 ```php
 use App\Finders\Tasks\TaskFinder;
@@ -153,6 +153,50 @@ You even can create your Finder and your filters in one command call.
 
 ```bash
 php artisan make:finder TaskFinder --model=Task --filter=Status --filter=UserOwnerId --filter=FinishedAt
+```
+
+### Global filters
+If you want to apply a **global filter** to your query, you can do it through the `global` method and passing a Closure as parameter.
+
+```php
+use App\Finders\Tasks\TaskFinder;
+use Illuminate\Support\Facades\Auth;
+
+$tasks = TaskFinder::global(function ($query) {
+    $query->where('user_owner_id', Auth::id());
+})
+->filters([
+    'status' => request('status'),
+    'finished_at' => request('finished_at'),
+])->get();
+```
+
+In case you want to use some of your created filters as a **global filter** you can do it like this:
+
+```php
+use App\Finders\Tasks\TaskFinder;
+use Illuminate\Support\Facades\Auth;
+use App\Finders\Tasks\Filters\Status;
+
+$tasks = TaskFinder::global(Status::class, 'completed')
+->filters([
+    'user_owner_id' => request('user_owner_id'),
+    'finished_at' => request('finished_at'),
+])->get();
+
+// Or add many global filters at once
+$tasks = TaskFinder::global([
+    [Status::class, 'completed'],
+    function ($query) {
+        $query->where('user_owner_id', Auth::id());
+    },
+    // ..., MORE
+    // ..., GLOBAL
+    // ..., FILTERS
+])
+->filters([
+    'finished_at' => request('finished_at'),
+])->get();
 ```
 
 ## Change log
