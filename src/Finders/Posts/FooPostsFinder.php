@@ -7,6 +7,6 @@ use Backfron\LaravelFinder\LaravelFinder;
 
 class FooPostsFinder extends LaravelFinder
 {
-    protected static $model = FooPost::class;
+    protected $model = FooPost::class;
 
 }
