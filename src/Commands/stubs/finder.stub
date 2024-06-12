@@ -7,6 +7,6 @@ use Backfron\LaravelFinder\LaravelFinder;
 
 class {{ class }} extends LaravelFinder
 {
-    protected static $model = {{ model }}::class;
+    protected $model = {{ model }}::class;
 
 }

@@ -38,7 +38,7 @@ use Backfron\LaravelFinder\LaravelFinder;
 
 class PostFinder extends LaravelFinder
 {
-    protected static \$model = Post::class;
+    protected \$model = Post::class;
 
 }
 
@@ -78,7 +78,7 @@ use Backfron\LaravelFinder\LaravelFinder;
 
 class ClientFinder extends LaravelFinder
 {
-    protected static \$model = Client::class;
+    protected \$model = Client::class;
 
 }
 
@@ -115,7 +115,7 @@ use Backfron\LaravelFinder\LaravelFinder;
 
 class CompanyFinder extends LaravelFinder
 {
-    protected static \$model = Model::class;
+    protected \$model = Model::class;
 
 }
 
