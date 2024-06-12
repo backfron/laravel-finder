@@ -199,6 +199,9 @@ $tasks = TaskFinder::global([
 ])->get();
 ```
 
+## TODO
+- Include in the filter file blueprint a condition to avoid the application of the filter if the parameter is empty.
+
 ## Change log
 
 Please see the [changelog](changelog.md) for more information on what has changed recently.
