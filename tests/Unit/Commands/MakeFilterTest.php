@@ -7,8 +7,7 @@ use Backfron\LaravelFinder\Tests\LaravelFinderTestCase;
 
 class MakeFilterTest extends LaravelFinderTestCase
 {
-    /** @test */
-    public function can_create_a_filter()
+    public function test_can_create_a_filter()
     {
         $postModel = app_path('Models/Post.php');
         $postFinder = app_path('Finders/Posts/PostFinder.php');
@@ -62,8 +61,7 @@ CLASS;
         $this->assertEquals($expectedContents, file_get_contents($nameFilter));
     }
 
-    /** @test */
-    public function can_create_a_filter_with_composed_name()
+    public function test_can_create_a_filter_with_composed_name()
     {
         $postModel = app_path('Models/Post.php');
         $postFinder = app_path('Finders/Posts/PostFinder.php');
@@ -117,8 +115,7 @@ CLASS;
         $this->assertEquals($expectedContents, file_get_contents($nameFilter));
     }
 
-    /** @test */
-    public function if_model_is_not_specified_stop_command()
+    public function test_if_model_is_not_specified_stop_command()
     {
         $postModel = app_path('Models/Post.php');
         $postFinder = app_path('Finders/Posts/PostFinder.php');
@@ -146,8 +143,7 @@ CLASS;
         $this->assertFalse(File::exists($nameFilter));
     }
 
-    /** @test */
-    public function if_existing_model_is_specified_but_finder_folder_do_not_exists_stop_command()
+    public function test_if_existing_model_is_specified_but_finder_folder_do_not_exists_stop_command()
     {
         $postModel = app_path('Models/Post.php');
         $postFinder = app_path('Finders/Posts/PostFinder.php');

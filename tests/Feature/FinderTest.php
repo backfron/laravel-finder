@@ -10,7 +10,6 @@ use Backfron\LaravelFinder\Tests\LaravelFinderTestCase;
 class FinderTest extends LaravelFinderTestCase
 {
 
-    /** @test */
     public function test_can_apply_filter()
     {
         $posts = FooPostsFinder::filters('foo_title', 'Vue.js')
@@ -19,7 +18,6 @@ class FinderTest extends LaravelFinderTestCase
         $this->assertCount(3, $posts);
     }
 
-    /** @test */
     public function test_can_apply_an_array_of_filters()
     {
         $posts = FooPostsFinder::filters([
@@ -32,7 +30,6 @@ class FinderTest extends LaravelFinderTestCase
         $this->assertEquals(1, $posts[0]->user_id);
     }
 
-    /** @test */
     public function test_can_apply_a_global_filter()
     {
         $posts = FooPostsFinder::global(fn ($query) => $query->where('user_id', 1))
@@ -45,7 +42,6 @@ class FinderTest extends LaravelFinderTestCase
         $this->assertEquals(1, $posts[0]->user_id);
     }
 
-    /** @test */
     public function test_can_apply_many_global_filters()
     {
         $posts = FooPostsFinder::global([
@@ -58,7 +54,6 @@ class FinderTest extends LaravelFinderTestCase
         $this->assertEquals(1, $posts[0]->user_id);
     }
 
-    /** @test */
     public function test_can_apply_class_filters_as_global_filters()
     {
         $posts = FooPostsFinder::global(
@@ -71,8 +66,7 @@ class FinderTest extends LaravelFinderTestCase
         $this->assertEquals(6, $posts[2]->id);
     }
 
-    /** @test */
-    public function dont_throw_an_exception_if_filter_dont_exists()
+    public function test_dont_throw_an_exception_if_filter_dont_exists()
     {
         Config::set('laravel-finder.ignore-unexisting-filters', true);
         $posts = FooPostsFinder::filters(['unexisting_filter', 'Vue'])
@@ -81,8 +75,7 @@ class FinderTest extends LaravelFinderTestCase
         $this->assertCount(6, $posts);
     }
 
-    /** @test */
-    public function throw_an_exception_if_filter_dont_exists()
+    public function test_throw_an_exception_if_filter_dont_exists()
     {
         Config::set('laravel-finder.ignore-unexisting-filters', false);
         try {

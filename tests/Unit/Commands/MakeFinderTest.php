@@ -7,8 +7,7 @@ use Backfron\LaravelFinder\Tests\LaravelFinderTestCase;
 
 class MakeFinderTest extends LaravelFinderTestCase
 {
-    /** @test */
-    public function can_create_a_finder_specifing_model()
+    public function test_can_create_a_finder_specifing_model()
     {
         // destination path of the PostFinder class
         $postFinder = app_path('Finders/Posts/PostFinder.php');
@@ -48,8 +47,7 @@ CLASS;
         $this->assertEquals($expectedContents, file_get_contents($postFinder));
     }
 
-    /** @test */
-    public function can_create_a_finder_without_specifing_model()
+    public function test_can_create_a_finder_without_specifing_model()
     {
         // destination path of the ClientFinder class
         $clientFinder = app_path('Finders/Clients/ClientFinder.php');
@@ -89,8 +87,7 @@ CLASS;
         $this->assertEquals($expectedContents, file_get_contents($clientFinder));
     }
 
-    /** @test */
-    public function can_create_a_finder_for_an_unspecified_and_unexisting_model()
+    public function test_can_create_a_finder_for_an_unspecified_and_unexisting_model()
     {
         // destination path of the CompanyFinder class
         $companyFinder = app_path('Finders/Companies/CompanyFinder.php');
@@ -127,8 +124,7 @@ CLASS;
         $this->assertEquals($expectedContents, file_get_contents($companyFinder));
     }
 
-    /** @test */
-    public function stop_command_if_specified_model_do_not_exists()
+    public function test_stop_command_if_specified_model_do_not_exists()
     {
         // destination path of the CompanyFinder class
         $companyFinder = app_path('Finders/Companies/CompanyFinder.php');
@@ -148,8 +144,7 @@ CLASS;
         $this->assertFalse(File::exists($companyFinder));
     }
 
-    /** @test */
-    public function can_create_a_finder_specifing_filters()
+    public function test_can_create_a_finder_specifing_filters()
     {
         // destination path of the PostFinder class
         $postFinder = app_path('Finders/Posts/PostFinder.php');
@@ -176,8 +171,7 @@ CLASS;
 
     }
 
-    /** @test */
-    public function can_create_a_finder_specifing_filters_and_model()
+    public function test_can_create_a_finder_specifing_filters_and_model()
     {
         // destination path of the PostFinder class
         $postFinder = app_path('Finders/Posts/PostFinder.php');
